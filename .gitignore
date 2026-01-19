@@ -36,3 +36,5 @@
 
 # Model files are > 100 MB
 /models 
+
+catboost_info/

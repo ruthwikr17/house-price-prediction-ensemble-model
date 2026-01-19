@@ -450,7 +450,7 @@ with st.sidebar:
 
 # --- Predict the House Page ---
 if selected == "Predict House Price":
-    st.title("🏡 Predict House Price using Advanced XGBoost Modeling")
+    st.title("Predict House Prices using Advanced ML Models")
     st.markdown("---")
 
     # Initialize session state for form visibility and input values
@@ -469,7 +469,7 @@ if selected == "Predict House Price":
         st.markdown(
             """
             <h2 style='text-align:center; color: #1a73e8; font-family: "Inter", sans-serif; font-size: 2.8em;'>
-                Get Accurate House Price Predictions Using Advanced ML Models
+                Get Accurate House Price Predictions based on Available Data
             </h2>
             <br>
             """,
@@ -477,7 +477,7 @@ if selected == "Predict House Price":
         )
         col_btn1, col_btn2, col_btn3 = st.columns([1, 0.5, 1])
         with col_btn2:
-            if st.button("Try Now ✨", key="try_now_button"):
+            if st.button("Check Out", key="try_now_button"):
                 st.session_state.show_prediction_form = True
                 st.rerun()
     else:

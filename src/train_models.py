@@ -1,4 +1,4 @@
-import os
+import os, sys
 import joblib
 import pandas as pd
 import numpy as np
@@ -13,7 +13,9 @@ from catboost import CatBoostRegressor
 from sklearn.model_selection import train_test_split, RandomizedSearchCV
 from sklearn.metrics import mean_squared_error, r2_score
 from scipy.stats import randint, uniform, loguniform
-from src.preprocess import preprocess_data
+from preprocess import preprocess_data
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 
 def tune_model(model, param_dist, X_train, y_train, cv=5, n_iter=50):
@@ -169,4 +171,8 @@ def train_and_save_models(data_path):
 
 
 if __name__ == "__main__":
-    train_and_save_models("../data/Indian_Real_Estate_Clean_Data.csv")
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    DATA_PATH = os.path.join(
+        BASE_DIR, "..", "data", "Indian_Real_Estate_Clean_Data.csv"
+    )
+    train_and_save_models(DATA_PATH)

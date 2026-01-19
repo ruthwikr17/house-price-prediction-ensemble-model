@@ -13,16 +13,9 @@ class PricePredictor:
 
         # === Auto-train if artifacts not found (for Streamlit Cloud) ===
         if not os.path.exists(artifacts_path):
-            from src.train_models import train_and_save_models
-
-            data_path = os.path.join(
-                os.path.dirname(__file__),
-                "..",
-                "data",
-                "Indian_Real_Estate_Clean_Data.csv",
+            raise FileNotFoundError(
+                "Model artifacts not found. Please run train_models.py locally before deployment."
             )
-
-            train_and_save_models(data_path)
 
         # === Load artifacts ===
         self.artifacts = joblib.load(artifacts_path)
