@@ -11,9 +11,13 @@ class PricePredictor:
             os.path.dirname(__file__), "../models/trained_artifacts.pkl"
         )
         if not os.path.exists(artifacts_path):
-            from train_models import train_and_save_models
+            from src.train_models import train_and_save_models
 
-            train_and_save_models("../data/Indian_Real_Estate_Clean_Data.csv")
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            data_path = os.path.join(
+                base_dir, "..", "data", "Indian_Real_Estate_Clean_Data.csv"
+            )
+            train_and_save_models(data_path)
 
         self.artifacts = joblib.load(artifacts_path)
         self.model = self.artifacts["models"]["Ensemble"]  # Ensure correct case
