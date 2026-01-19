@@ -1,4 +1,4 @@
-# 🏡 House Price Prediction: XGB-Powered Predictive Analytics for Indian Housing Markets
+# House Price Prediction using Advanced ML Models 
 House Price Prediction using Advanced XGBoost Techniques 
 
 
@@ -6,13 +6,13 @@ This project presents a robust machine learning system designed to predict resid
 
 ---
 
-## 📌 Problem Statement
+## Problem Statement
 
 Accurately estimating house prices is challenging due to diverse factors like location, area, number of rooms, property type, and city-specific trends. Buyers and real estate professionals require reliable tools to support informed decisions in this complex market.
 
 ---
 
-## ✅ Proposed Solution
+## Proposed Solution
 
 - A data-driven regression system using ensemble ML models.
 - Real-time predictions with dynamic user input.
@@ -21,7 +21,7 @@ Accurately estimating house prices is challenging due to diverse factors like lo
 
 ---
 
-## 🔍 Dataset
+## Dataset
 
 - **Source:** Curated Indian real estate dataset.
 - **Key Features:**
@@ -31,7 +31,7 @@ Accurately estimating house prices is challenging due to diverse factors like lo
 
 ---
 
-## 🧠 Machine Learning Models
+## Machine Learning Models
 
 - **Linear Regression**
 - **Random Forest Regressor**
@@ -43,7 +43,7 @@ Accurately estimating house prices is challenging due to diverse factors like lo
 
 ---
 
-## 🧪 Model Evaluation
+## Model Evaluation
 
 | Model        | MSE       | R² Score |
 |--------------|-----------|----------|
@@ -55,16 +55,16 @@ Accurately estimating house prices is challenging due to diverse factors like lo
 
 ---
 
-## 🚀 Streamlit Dashboard Features
+## Streamlit Dashboard Features
 
-- 📈 **Visualizations**: Price distributions, area vs price, filters by city, type, and BHK.
-- 🔮 **Price Prediction**: Based on user input.
-- 🤖 **AI-Powered Search**: Natural language queries using Gemini API (e.g., “3BHK flats in LB Nagar under 50L?”).
-- 🏙️ **Filtered City Insights**: Neighborhood-level predictions.
+- **Visualizations**: Price distributions, area vs price, filters by city, type, and BHK.
+- **Price Prediction**: Based on user input.
+- **AI-Powered Search**: Natural language queries using Gemini API (e.g., “3BHK flats in LB Nagar under 50L?”).
+- **Filtered City Insights**: Neighborhood-level predictions.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 **Backend / ML**
 - Python (scikit-learn, XGBoost, CatBoost)
@@ -82,7 +82,7 @@ Accurately estimating house prices is challenging due to diverse factors like lo
 
 ---
 
-## 🗂️ Folder Structure
+## Folder Structure
 
 ```bash
 Project/
