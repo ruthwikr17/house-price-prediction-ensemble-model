@@ -38,3 +38,5 @@
 /models 
 
 catboost_info/
+
+.DS_Store
