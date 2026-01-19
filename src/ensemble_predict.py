@@ -6,28 +6,37 @@ import pandas as pd
 
 class PricePredictor:
     def __init__(self):
-        # Load all artifacts
+        # Path to saved model artifacts
         artifacts_path = os.path.join(
-            os.path.dirname(__file__), "../models/trained_artifacts.pkl"
+            os.path.dirname(__file__), "..", "models", "trained_artifacts.pkl"
         )
+
+        # === Auto-train if artifacts not found (for Streamlit Cloud) ===
         if not os.path.exists(artifacts_path):
             from src.train_models import train_and_save_models
 
-            base_dir = os.path.dirname(os.path.abspath(__file__))
             data_path = os.path.join(
-                base_dir, "..", "data", "Indian_Real_Estate_Clean_Data.csv"
+                os.path.dirname(__file__),
+                "..",
+                "data",
+                "Indian_Real_Estate_Clean_Data.csv",
             )
+
             train_and_save_models(data_path)
 
+        # === Load artifacts ===
         self.artifacts = joblib.load(artifacts_path)
-        self.model = self.artifacts["models"]["Ensemble"]  # Ensure correct case
+
+        self.model = self.artifacts["models"]["Ensemble"]
         self.target_encoder = self.artifacts["preprocessors"]["target_encoder"]
         self.scaler = self.artifacts["preprocessors"]["scaler"]
         self.feature_order = self.artifacts["preprocessors"]["feature_order"]
+
+        # Price ranges may or may not exist — safe getter
         self.price_ranges = self.artifacts.get("metadata", {}).get("price_ranges", {})
 
-        # Conservative defaults for unknown cities
-        self.default_range = (1_500_000, 12_500_000)
+        # Default fallback range
+        self.default_range = (15_00_000, 1_25_00_000)
 
     def _validate_input(self, input_data):
         """Validate input structure and basic sanity checks"""
