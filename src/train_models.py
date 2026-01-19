@@ -36,8 +36,8 @@ def tune_model(model, param_dist, X_train, y_train, cv=5, n_iter=50):
     return search.best_estimator_
 
 
-def train_and_save_models(data_path):
-    print("\n📊 Loading and preprocessing data...")
+def train_and_save_models(data_path, cloud_mode=False):
+    print("\nLoading and preprocessing data...")
     X, y, (target_encoder, scaler, feature_order) = preprocess_data(data_path)
     y_log = np.log1p(y)
 
@@ -84,6 +84,9 @@ def train_and_save_models(data_path):
             "bagging_temperature": uniform(0, 1),
         },
     }
+
+    if cloud_mode:
+        tune_configs = {}
 
     models = {
         "LinearRegression": LinearRegression(),
