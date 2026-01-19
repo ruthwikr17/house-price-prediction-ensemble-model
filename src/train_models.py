@@ -13,7 +13,7 @@ from catboost import CatBoostRegressor
 from sklearn.model_selection import train_test_split, RandomizedSearchCV
 from sklearn.metrics import mean_squared_error, r2_score
 from scipy.stats import randint, uniform, loguniform
-from preprocess import preprocess_data
+from src.preprocess import preprocess_data
 
 
 def tune_model(model, param_dist, X_train, y_train, cv=5, n_iter=50):
