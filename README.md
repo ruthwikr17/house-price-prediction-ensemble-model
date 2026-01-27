@@ -1,5 +1,5 @@
-# House Price Prediction using Advanced ML Models 
-House Price Prediction using Advanced XGBoost Techniques 
+# Real Estate Market Intelligence 
+Real Estate Market Prediction and Analysis using Advanced XGBoost Techniques 
 
 
 This project presents a robust machine learning system designed to predict residential property prices across Indian cities using advanced ensemble models including XGBoost, Random Forest, and CatBoost. The system is supported by a fully interactive Streamlit dashboard, offering users real-time prediction, filtering, and AI-assisted search capabilities.
