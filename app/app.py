@@ -22,7 +22,10 @@ load_dotenv()
 
 # Define base directory for relative paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(BASE_DIR, "..", "data", "Indian_Real_Estate_Clean_Data.csv")
+# New (Corrected)
+DATA_PATH = os.path.join(
+    BASE_DIR, "..", "data", "Indian_Real_Estate_Clean_Data_FIXED.csv"
+)
 
 
 # --- LLM API Configuration ---
