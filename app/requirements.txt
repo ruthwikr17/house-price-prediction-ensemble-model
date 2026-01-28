@@ -1,0 +1,15 @@
+pandas
+numpy
+scikit-learn
+xgboost
+catboost
+matplotlib
+seaborn
+joblib
+category-encoders
+scipy
+streamlit
+plotly
+streamlit-option-menu
+python-dotenv
+altair==4.2.2
