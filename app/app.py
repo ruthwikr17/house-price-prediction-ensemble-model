@@ -14,8 +14,14 @@ import plotly.express as px
 import json  # Import json for handling LLM response
 import requests  # Import requests for API calls
 import re  # Import regex for post-processing
-
 from dotenv import load_dotenv
+
+import warnings
+
+# Suppress scikit-learn version warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="sklearn")
+# Suppress XGBoost warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="xgboost")
 
 load_dotenv()
 
@@ -42,11 +48,24 @@ st.set_page_config(page_title="House Price Predictor", layout="wide")
 def load_data():
     """Loads the real estate dataset and handles outliers."""
     try:
-        df = pd.read_csv(DATA_PATH)
+        # 1. Update the filename to point to the FIXED version
+        # Ensure this matches the file created by your cleaner script
+        current_data_path = os.path.join(
+            BASE_DIR, "..", "data", "Indian_Real_Estate_Clean_Data_FIXED.csv"
+        )
+
+        # Check if FIXED file exists, otherwise fallback to original but skip bad lines
+        if not os.path.exists(current_data_path):
+            st.warning(
+                "Fixed dataset not found. Attempting to load original with skipping..."
+            )
+            current_data_path = DATA_PATH
+
+        # 2. Add `on_bad_lines='skip'` (pandas >= 1.3) or `error_bad_lines=False`
+        # This prevents the app from crashing on one bad row
+        df = pd.read_csv(current_data_path, on_bad_lines="skip")
 
         # --- Outlier Handling ---
-        # Removed: df = df[df['Total_Rooms'] >= df['BHK']] # This line was incorrectly filtering out valid data.
-
         df["Price"] = pd.to_numeric(df["Price"], errors="coerce")
         df = df.dropna(subset=["Price"])  # Drop NaN prices
         df = df[df["Price"] <= 100000000]  # 10 Crore
@@ -58,7 +77,7 @@ def load_data():
         return df
     except FileNotFoundError:
         st.error(
-            f"Error: Dataset not found at {DATA_PATH}. Please ensure the 'data' directory and 'Indian_Real_Estate_Clean_Data.csv' exist."
+            f"Error: Dataset not found. Please ensure 'Indian_Real_Estate_Clean_Data_FIXED.csv' exists."
         )
         st.stop()
     except Exception as e:
@@ -643,7 +662,7 @@ if selected == "Predict House Price":
                         locations_to_predict = (
                             city_filtered_df["Location"].dropna().unique()
                         )
-                        prediction_type_info = f"average price across all available properties in {city_val}"
+                        prediction_type_info = f"predicted price across all available properties in {city_val}"
                     else:
                         locations_to_predict = (
                             city_filtered_df[
@@ -654,7 +673,7 @@ if selected == "Predict House Price":
                             .dropna()
                             .unique()
                         )
-                        prediction_type_info = f"average price for properties in '{location_val}' within {city_val}"
+                        prediction_type_info = f"predicted for properties in '{location_val}' within {city_val}"
 
                     if len(locations_to_predict) == 0:
                         st.warning(
@@ -717,7 +736,7 @@ if selected == "Predict House Price":
                         )
                         if len(predicted_prices) > 1:
                             st.info(
-                                f"💡 Showing {prediction_type_info} based on {len(predicted_prices)} properties."
+                                f"Showing {prediction_type_info} based on {len(predicted_prices)} properties."
                             )
                     else:
                         st.warning(
@@ -728,7 +747,7 @@ if selected == "Predict House Price":
 # --- Visualize Dataset Page ---
 
 elif selected == "Visualize and Filter":
-    st.title("📊 Explore and Filter Dataset")
+    st.title("Explore and Filter Dataset")
     st.markdown("---")
 
     st.subheader("Filter Dataset Records")
@@ -1058,146 +1077,21 @@ elif selected == "Visualize and Filter":
 
 # --- AI-Powered Page ---
 elif selected == "AI Search":
-    st.title("🤖 AI-Integrated Smart Search")
+    st.title("AI-Integrated Smart Search")
     st.markdown("---")
 
     st.markdown(
         """
-        <p style='font-size: 1.1em; text-align: center;'>
-            Ask a natural language question about properties to find relevant listings.
-        </p>
-        <p style='font-size: 0.9em; text-align: center; color: #555;'>
-            Example: "Show me 3BHK apartments in Bangalore under 1 Crore." <br>
-            Example: "Find villas in Hyderabad with area more than 2000 sqft."
-        </p>
+        <div style='text-align: center; padding: 50px;'>
+            <h2 style='color: #555;'>🚧 Feature Coming Soon 🚧</h2>
+            <p style='font-size: 1.2em; color: #666;'>
+                We are currently implementing advanced AI search capabilities to help you find your dream home faster.
+                <br>Please check back later!
+            </p>
+        </div>
         """,
         unsafe_allow_html=True,
     )
-
-    user_query = st.text_area(
-        "Enter your query:",
-        placeholder="e.g., Find 2BHK flats in Pune with balcony",
-        height=100,
+    st.info(
+        "In the meantime, please use the 'Predict House Price' or 'Visualize and Filter' pages from the navigation menu."
     )
-
-    if st.button("AI Search", key="ai_search_button"):
-        if user_query:
-            with st.spinner("Processing your query with AI..."):
-                filtered_ai_df, extracted_filters = get_llm_filtered_data(user_query)
-
-            st.markdown("---")
-            st.subheader("AI Search Results")
-
-            if extracted_filters:
-                st.markdown("**Extracted Filters:**")
-                # Display extracted filters in a nicely formatted bulleted list
-                for key, value in extracted_filters.items():
-                    # Format price in lakhs for display if key indicates price
-                    if "price_lakhs" in key and value is not None:
-                        st.markdown(
-                            f"- **{key.replace('_', ' ').title()}:** ₹{value:.2f} Lakhs"
-                        )
-                    else:
-                        st.markdown(f"- **{key.replace('_', ' ').title()}:** {value}")
-                st.markdown("---")
-
-            if not filtered_ai_df.empty:
-                st.info(f"Found {len(filtered_ai_df)} records matching your AI query.")
-
-                # Create a display copy for AI results
-                display_ai_df = filtered_ai_df.copy()
-
-                # Remove 'Total_Rooms' column for display
-                if "Total_Rooms" in display_ai_df.columns:
-                    display_ai_df = display_ai_df.drop(columns=["Total_Rooms"])
-
-                # Apply price formatting
-                display_ai_df["Price"] = display_ai_df["Price"].apply(
-                    format_price_for_display
-                )
-
-                st.dataframe(
-                    display_ai_df.reset_index(drop=True).rename(index=lambda x: x + 1)
-                )
-
-                # Optional: Basic visualizations for AI-filtered data
-                if (
-                    len(filtered_ai_df) > 5
-                ):  # Only show plots if a reasonable number of results
-                    st.markdown("### Visualizations for AI Search Results")
-
-                    plot_ai_col1, plot_ai_col2 = st.columns(2)
-
-                    with plot_ai_col1:
-                        fig_ai_price = px.histogram(
-                            filtered_ai_df,
-                            x="Price",
-                            title="Price Distribution (AI Filtered)",
-                            labels={"Price": "Price (INR)"},
-                            hover_data={"Price": ":,.0f"},
-                        )
-                        st.plotly_chart(fig_ai_price, use_container_width=True)
-
-                        if len(filtered_ai_df["property_type"].unique()) > 1:
-                            counts_df_ai_prop = (
-                                filtered_ai_df["property_type"]
-                                .value_counts()
-                                .reset_index()
-                            )
-                            counts_df_ai_prop.columns = [
-                                "Property_Type_Category",
-                                "Count",
-                            ]
-                            fig_ai_prop_count = px.bar(
-                                counts_df_ai_prop,
-                                x="Property_Type_Category",
-                                y="Count",
-                                title="Property Count by Type (AI Filtered)",
-                                labels={
-                                    "Property_Type_Category": "Property Type",
-                                    "Count": "Count",
-                                },
-                                color="Property_Type_Category",
-                            )
-                            st.plotly_chart(fig_ai_prop_count, use_container_width=True)
-
-                    with plot_ai_col2:
-                        fig_ai_area_price = px.scatter(
-                            filtered_ai_df,
-                            x="Total_Area(SQFT)",
-                            y="Price",
-                            color="BHK",
-                            title="Area vs Price (AI Filtered)",
-                            labels={
-                                "Total_Area(SQFT)": "Total Area (SQFT)",
-                                "Price": "Price (INR)",
-                            },
-                            hover_data={
-                                "Price": ":,.0f",
-                                "Total_Area(SQFT)": True,
-                                "BHK": True,
-                            },
-                        )
-                        st.plotly_chart(fig_ai_area_price, use_container_width=True)
-
-                        if len(filtered_ai_df["city"].unique()) > 1:
-                            counts_df_ai_city = (
-                                filtered_ai_df["city"].value_counts().reset_index()
-                            )
-                            counts_df_ai_city.columns = ["City_Category", "Count"]
-                            fig_ai_city_count = px.bar(
-                                counts_df_ai_city,
-                                x="City_Category",
-                                y="Count",
-                                title="Property Count by City (AI Filtered)",
-                                labels={"City_Category": "City", "Count": "Count"},
-                                color="City_Category",
-                            )
-                            st.plotly_chart(fig_ai_city_count, use_container_width=True)
-
-            else:
-                st.warning(
-                    "No properties found matching your AI query. Try rephrasing or broadening your search."
-                )
-        else:
-            st.warning("Please enter a query to perform an AI search.")
