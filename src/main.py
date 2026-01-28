@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load your dataset
-df = pd.read_csv("Datasets/hyderabad_normalised.csv")
+df = pd.read_csv("data/Indian_Real_Estate_Clean_Data.csv")
 
 
 sample_df = df.head(10)
