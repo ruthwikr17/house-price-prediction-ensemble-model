@@ -8,7 +8,7 @@ import os
 
 
 def preprocess_data(file_path):
-    df = pd.read_csv(file_path)
+    df = pd.read_csv(file_path, engine="python", on_bad_lines="skip")
 
     # Drop rows missing essential columns
     df = df.dropna(
